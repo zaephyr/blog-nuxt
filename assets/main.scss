@@ -1,0 +1,29 @@
+html {
+  @apply font-body;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.6s;
+}
+
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+}
+
+.btn {
+  @apply text-green-500 p-1 border-2 border-green-500 rounded;
+}
+
+.btn:hover {
+  @apply bg-green-500 text-gray-300 transition ease-in duration-500;
+}
+
+.form-cell {
+  @apply shadow appearance-none border border-green-200 rounded w-full py-2 px-3 text-gray-700 leading-tight mb-2;
+}
+
+.form-cell:focus {
+  @apply outline-none shadow-outline;
+}
