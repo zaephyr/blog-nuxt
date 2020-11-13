@@ -11,7 +11,14 @@
         class="text-6xl header-btn no-border hidden sm:block"
     /></NuxtLink>
     <div v-if="$auth.loggedIn" class="text-xl flex items-center">
-      <p>Hello, {{ $auth.user.username }}</p>
+      <p>
+        Hello,
+        <NuxtLink
+          to="/users/me"
+          class="transition  duration-500 ease-in cursor-pointer transform  hover:underline focus:underline"
+          >{{ $auth.user.username }}</NuxtLink
+        >
+      </p>
       <font-awesome-icon
         :icon="['fas', 'sign-out-alt']"
         class="header-btn"
@@ -47,6 +54,6 @@ export default {
 }
 
 .header-btn:hover {
-  @apply border-green-800 ease-linear duration-700;
+  @apply border-green-800 ease-linear duration-700 rotate-12;
 }
 </style>

@@ -1,3 +1,4 @@
+require("dotenv").config();
 export default {
   // Target (https://go.nuxtjs.dev/config-target)
   target: "static",
@@ -25,7 +26,9 @@ export default {
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     // https://go.nuxtjs.dev/tailwindcss
-    "@nuxtjs/tailwindcss"
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/cloudinary",
+    "@nuxtjs/dotenv"
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -53,6 +56,13 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     baseURL: "http://localhost:8080/api/v1/"
+  },
+  // Cloudinary module setup (https://cloudinary.nuxtjs.org/setup)
+  cloudinary: {
+    cloudName: process.env.CLOUDNAME,
+    apiKey: process.env.API_KEY,
+    apiSecret: process.env.API_SECRET,
+    useComponent: true
   },
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)

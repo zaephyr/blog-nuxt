@@ -1,6 +1,8 @@
 <template>
   <div>
-    <BlogHeader />
+    <client-only>
+      <BlogHeader />
+    </client-only>
     <Nuxt />
   </div>
 </template>

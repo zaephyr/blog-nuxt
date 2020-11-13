@@ -27,6 +27,8 @@ module.exports = {
       }
     }
   },
-  variants: {},
+  variants: {
+    transitionProperty: ["responsive", "hover", "focus"]
+  },
   plugins: [require("tailwindcss-truncate-multiline")()]
 };

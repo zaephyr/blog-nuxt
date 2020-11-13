@@ -14,23 +14,49 @@
     <h3 class="text-green-500 text-bold mt-12">Comments:</h3>
     <div
       v-for="message in blog_post.messages"
-      class="mt-4 shadow bg-green-100 w-11/12 sm:w-2/3"
+      class="mt-4 shadow bg-green-100 w-11/12 sm:w-3/4 relative"
       :key="message.createdAt"
     >
-      <p class="text-gray-600">{{ message.message }}</p>
-      <div class="flex justify-between items-center mt-2">
-        <button class="text-xs p-1 btn">Reply</button>
-        <p class="text-xs font-light text-right text-gray-500">
+      <div class="flex">
+        <cld-image
+          class="mb-2 flex justify-center "
+          :publicId="message.user.profile_img"
+          alt="no profile img"
+        >
+          <cld-transformation
+            aspect_ratio="1:1"
+            radius="max"
+            width="65"
+            crop="fill"
+            gravity="face"
+          />
+        </cld-image>
+        <p class="text-gray-600">{{ message.message }}</p>
+      </div>
+      <div class="flex  items-center justify-end">
+        <p class="text-xs font-light text-right text-gray-500 self-end">
           by {{ message.user.username }} on
           {{ formatDate(message.createdAt) }} at
           {{ formatTime(message.createdAt) }}
         </p>
       </div>
+      <div
+        v-if="$auth.loggedIn"
+        class="delete-btn"
+        @click="deleteMsg(message.id)"
+      >
+        <font-awesome-icon
+          v-if="message.user.username == $auth.user.username"
+          :icon="['fas', 'trash-alt']"
+        />
+      </div>
     </div>
     <div>
-      <h3 class="mt-4 mb-2">Add a new comment</h3>
-      <form method="POST" class="flex flex-col sm:flex-row relative">
+      <h3 class="mt-4 mb-2">{{ newComment }}</h3>
+      <form class="flex flex-col sm:flex-row relative">
         <textarea
+          v-if="$auth.loggedIn"
+          v-model="userInfo.message"
           name="coment"
           id="comment"
           cols="50"
@@ -65,9 +91,9 @@
               'my-auto sm:ml-2': $auth.loggedIn
             }"
             class="btn"
-            type="submit"
+            @click="postMsg"
           >
-            Submit
+            {{ btnText }}
           </button>
         </div>
       </form>
@@ -89,8 +115,13 @@ export default {
     return {
       userInfo: {
         username: "zaephyr",
-        password: "00zero00"
-      }
+        password: "00zero00",
+        message: "test message from the frontend!"
+      },
+      btnText: this.$auth.loggedIn ? "Submit Post" : "Log In",
+      newComment: this.$auth.loggedIn
+        ? "Add a new comment"
+        : "To comment you need to log in"
     };
   },
   methods: {
@@ -99,9 +130,39 @@ export default {
     },
     formatTime(date) {
       return format(new Date(date), "HH:mm");
+    },
+    async postMsg() {
+      if (this.$auth.loggedIn) {
+        let params = {
+          message: this.userInfo.message,
+          blogPost: this.blog_post._id,
+          user: this.$auth.user._id
+        };
+        let res = await this.$axios.$post(
+          `blogs/${this.blog_post._id}/messages`,
+          params
+        );
+        return res;
+      } else {
+        this.$auth.loginWith("local", {
+          data: this.userInfo
+        });
+      }
+    },
+    async deleteMsg(id) {
+      const res = await this.$axios.$delete(
+        `blogs/${this.blog_post._id}/messages/${id}`
+      );
+      return res;
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+.delete-btn {
+  top: 15px;
+  right: -50px;
+  @apply text-xl text-white bg-red-500 absolute px-1 rounded-md cursor-pointer;
+}
+</style>

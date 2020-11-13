@@ -1,9 +1,57 @@
 <template>
-  <div></div>
+  <div>
+    <div class="flex justify-center">
+      <button class="tab" :class="{ focused: profile }" @click="profile = true">
+        Profile
+      </button>
+      <button
+        class="tab"
+        :class="{ focused: !profile }"
+        @click="profile = false"
+      >
+        Blog Posts
+      </button>
+    </div>
+    <Profile v-if="profile" :getMe="getMe" />
+    <NewPost v-else :backLog="backLog" />
+  </div>
 </template>
 
 <script>
-export default {};
+import Profile from "~/components/Profile.vue";
+export default {
+  components: { Profile },
+  async asyncData({ params, $axios }) {
+    const getMe = await $axios.$get(`users/me`);
+    const backLog = await $axios.$get(`users/me/blogs`);
+    return { getMe, backLog };
+  },
+  data() {
+    return {
+      profile: true
+    };
+  },
+  methods: {
+    toggle() {
+      this.profile = !this.profile;
+    }
+  }
+};
 </script>
 
-<style></style>
+<style>
+.tab {
+  @apply border-2 text-green-600 border-green-200  p-2 transition ease-in-out duration-700 box-border;
+}
+
+.tab:hover {
+  @apply bg-green-200;
+}
+.tab:focus {
+  @apply outline-none;
+}
+
+.focused {
+  @apply bg-green-200;
+}
+</style>
