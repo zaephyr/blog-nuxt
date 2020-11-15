@@ -61,7 +61,7 @@
                             placeholder="Username"
                         />
                         <input
-                            v-model="userInfo.username"
+                            v-model="userInfo.password"
                             class="form-cell h-6"
                             id="password"
                             name="password"
