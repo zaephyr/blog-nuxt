@@ -11,24 +11,21 @@
 
 <script>
 export default {
-  async fetch() {
-    this.blogs = await fetch("http://localhost:8080/api/v1/blogs/").then(res =>
-      res.json()
-    );
-  },
-  fetchOnServer: true,
-  data() {
-    return {
-      blogs: []
-    };
+  // async fetch() {
+  //   this.blogs = await fetch("http://localhost:8080/api/v1/blogs/").then(res =>
+  //     res.json()
+  //   );
+  // },
+  // fetchOnServer: true,
+  // data() {
+  //   return {
+  //     blogs: []
+  //   };
+  async asyncData({ params, $axios }) {
+    const blogs = await $axios.$get("blogs");
+    return { blogs };
   },
   transition: "page"
-
-  // async asyncData({ params, $axios}) {
-  //     const getBlogs = await $axios.$get("http://localhost:8080/api/v1/blogs/")
-
-  //     return { getBlogs }
-  // }
 };
 </script>
 

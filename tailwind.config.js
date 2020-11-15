@@ -25,6 +25,10 @@ module.exports = {
       fontFamily: {
         body: ["Lato", "Roboto"]
       }
+    },
+    minHeight: {
+      "65": "65px",
+      "75": "75px"
     }
   },
   variants: {

@@ -32,19 +32,11 @@
       </button>
     </div>
     <div class="flex-col sm:my-auto mx-auto mt-4 ">
-      <cld-image
-        class="mb-2 flex justify-center"
-        :publicId="getMe.profile_img"
-        alt="no profile img"
-      >
-        <cld-transformation
-          radius="max"
-          width="65"
-          crop="fill"
-          gravity="face"
-          loading="lazy"
-        />
-      </cld-image>
+      <ProfilePic
+        :profile_img="getMe.profile_img"
+        class="mb-2 flex
+      justify-center"
+      />
 
       <button class="btn" @click="openCloudinaryWidget">Upload image</button>
     </div>
@@ -52,7 +44,9 @@
 </template>
 
 <script>
+import ProfilePic from "./ProfilePic.vue";
 export default {
+  components: { ProfilePic },
   props: ["getMe"],
   data() {
     return {
@@ -69,7 +63,6 @@ export default {
 
   methods: {
     handleFileChange(event) {
-      console.log(event.target.files[0]);
       this.file = event.target.files[0];
       this.filesSelected = event.target.files.length;
     },
@@ -98,7 +91,6 @@ export default {
         (error, result) => {
           //checking if upload was successfully done!
           if (!error && result && result.event === "success") {
-            console.log(result.info);
             //save url to a server database, or prerform any other logic here
             const img_url = result.info.public_id;
             let res = this.$axios.patch("users/updateMe", {
