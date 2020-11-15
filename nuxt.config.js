@@ -58,8 +58,8 @@ export default {
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
-        baseURL: 'http://localhost:8080/api/v1/',
-        // baseURL: 'https://pacific-fjord-55363.herokuapp.com/api/v1/',
+        // baseURL: 'http://localhost:8080/api/v1/',
+        baseURL: 'https://pacific-fjord-55363.herokuapp.com/api/v1/',
     },
     // Cloudinary module setup (https://cloudinary.nuxtjs.org/setup)
     cloudinary: {
@@ -96,6 +96,10 @@ export default {
                 globalToken: true,
                 autoFetchUser: false,
             },
+        },
+        redirect: {
+            logout: '/blogs',
+            home: '/blogs',
         },
     },
     serverMiddleware: ['~/serverMiddleware/redirects.js'],
