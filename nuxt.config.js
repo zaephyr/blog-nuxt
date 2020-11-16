@@ -94,7 +94,7 @@ export default {
                 tokenRequired: true,
                 tokenType: 'bearer',
                 globalToken: true,
-                autoFetchUser: false,
+                autoFetchUser: true,
             },
         },
         redirect: {
