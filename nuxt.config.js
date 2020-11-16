@@ -30,7 +30,7 @@ export default {
     buildModules: [
         // https://go.nuxtjs.dev/tailwindcss
         '@nuxtjs/tailwindcss',
-        '@nuxtjs/cloudinary',
+
         '@nuxtjs/dotenv',
     ],
 
@@ -40,6 +40,7 @@ export default {
         '@nuxtjs/axios',
         // https://go.nuxtjs.dev/pwa
         '@nuxtjs/pwa',
+        '@nuxtjs/cloudinary',
         // https://go.nuxtjs.dev/content
         '@nuxt/content',
         '@nuxtjs/auth',
