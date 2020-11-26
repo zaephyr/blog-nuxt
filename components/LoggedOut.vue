@@ -7,7 +7,11 @@
             </div>
         </transition>
         <transition name="loginForm">
-            <form v-if="loginShow" class=" slidein flex absolute top-0 right-0 w-1/2 sm:w-1/3 mt-4 h-16 ">
+            <form
+                v-if="loginShow"
+                class=" slidein flex absolute top-0 right-0 w-1/2 sm:w-1/3 mt-4 h-16 "
+                @submit.prevent="onLogin()"
+            >
                 <div class="ml-auto w-40">
                     <input
                         v-model="userInfo.username"
@@ -39,9 +43,10 @@
                         :icon="['fas', 'eye-slash']"
                         @click="showPassword = !showPassword"
                     />
+                    <span v-if="errors"> {{ errors }}</span>
                 </div>
-                <button class="btn" @click="submitForm(userInfo)">
-                    Log in
+                <button class="btn" type="submit">
+                    Login
                 </button>
                 <font-awesome-icon :icon="['fas', 'chevron-right']" class="header-btn" @click="toggleLogin" />
             </form>
@@ -58,19 +63,33 @@
 </template>
 
 <script>
+import { required, username, minLength } from 'vuelidate/lib/validators';
 export default {
-    props: ['submitForm'],
     data() {
         return {
-            valid: true,
             showPassword: false,
             loginShow: false,
             signupShow: false,
             userInfo: {
-                username: '',
-                password: '',
+                username: 'zaephyr',
+                password: '00zero00',
             },
+            loading: false,
+            errors: false,
         };
+    },
+    validations: {
+        userInfo: {
+            username: {
+                required,
+                username,
+                minLength: minLength(3),
+            },
+            password: {
+                required,
+                minLength: minLength(8),
+            },
+        },
     },
     methods: {
         toggleLogin() {
@@ -78,6 +97,33 @@ export default {
         },
         toggleSignup() {
             this.signupShow = !this.signupShow;
+        },
+
+        async onLogin() {
+            try {
+                const { data, token } = await this.$axios.$post('/auth/login', {
+                    username: this.userInfo.username,
+                    password: this.userInfo.password,
+                });
+                await this.$store.commit('auth/SET_TOKEN', token);
+                await this.$store.commit('auth/SET_USER', data.user);
+                const { form } = this.$route.query;
+                if (form) {
+                    await this.$router.push({ path: '/blogs' });
+                } else {
+                    await this.$router.push({
+                        path: '/users/me',
+                        params: {
+                            user: {
+                                id: data.user._id,
+                                username: data.user.username,
+                            },
+                        },
+                    });
+                }
+            } catch (e) {
+                alert('Error!');
+            }
         },
     },
 };

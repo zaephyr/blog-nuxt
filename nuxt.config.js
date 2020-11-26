@@ -21,7 +21,7 @@ export default {
     css: ['~/assets/main.scss'],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-    plugins: [],
+    plugins: [{ src: '@/plugins/axios.js' }, { src: '@/plugins/vuelidate.js' }, { src: '@/plugins/global-mixins.js' }],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
     components: true,
@@ -41,8 +41,7 @@ export default {
         '@nuxtjs/pwa',
         '@nuxtjs/cloudinary',
         // https://go.nuxtjs.dev/content
-        '@nuxt/content',
-        '@nuxtjs/auth',
+        'cookie-universal-nuxt',
         [
             'nuxt-fontawesome',
             {
@@ -58,8 +57,8 @@ export default {
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
-        // baseURL: 'http://localhost:8080/api/v1/',
-        baseURL: 'https://pacific-fjord-55363.herokuapp.com/api/v1/',
+        baseURL: 'http://localhost:8080/api/v1/',
+        // baseURL: 'https://pacific-fjord-55363.herokuapp.com/api/v1/',
     },
     // Cloudinary module setup (https://cloudinary.nuxtjs.org/setup)
     cloudinary: {
@@ -74,33 +73,4 @@ export default {
 
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {},
-
-    auth: {
-        strategies: {
-            local: {
-                endpoints: {
-                    login: {
-                        url: '/auth/login',
-                        method: 'post',
-                        propertyName: 'token',
-                    },
-                    logout: { url: '/auth/logout', method: 'post' },
-                    user: {
-                        url: '/users/me',
-                        method: 'get',
-                        propertyName: false,
-                    },
-                },
-                tokenRequired: true,
-                tokenType: 'bearer',
-                globalToken: true,
-                autoFetchUser: true,
-            },
-        },
-        redirect: {
-            logout: '/blogs',
-            home: '/blogs',
-        },
-    },
-    serverMiddleware: ['~/serverMiddleware/redirects.js'],
 };

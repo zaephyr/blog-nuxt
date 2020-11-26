@@ -29,18 +29,18 @@
                     {{ formatTime(message.createdAt) }}
                 </p>
             </div>
-            <div v-if="$auth.loggedIn" class="delete-btn" @click="deleteMsg(message.id)">
+            <div v-if="_loggedIn" class="delete-btn" @click="deleteMsg(message.id)">
                 <font-awesome-icon
-                    v-if="message.user.username == $auth.user.username || $auth.user.isAdmin"
+                    v-if="message.user.username == _user.username || _user.isAdmin"
                     :icon="['fas', 'trash-alt']"
                 />
             </div>
         </div>
         <div>
-            <h3 class="mt-4 mb-2">{{ newComment }}</h3>
+            <h3 class="mt-4 mb-2">{{ _loggedIn ? 'Add a new comment' : 'To comment you need to log in' }}</h3>
             <form class="flex flex-col sm:flex-row relative">
                 <textarea
-                    v-if="$auth.loggedIn"
+                    v-if="_loggedIn"
                     v-model="userInfo.message"
                     name="coment"
                     id="comment"
@@ -50,7 +50,7 @@
                     placeholder="Your comment goes here..."
                 ></textarea>
                 <div class="mt-4 sm:mt-0 flex flex-col justify-center">
-                    <div class="ml-3 flex flex-col" v-if="!$auth.loggedIn">
+                    <div class="ml-3 flex flex-col" v-if="!_loggedIn">
                         <input
                             v-model="userInfo.username"
                             class="form-cell h-6  "
@@ -70,16 +70,10 @@
                             placeholder="******************"
                         />
                     </div>
-                    <button
-                        :class="{
-                            'mx-auto': !$auth.loggedIn,
-                            'my-auto sm:ml-2': $auth.loggedIn,
-                        }"
-                        class="btn"
-                        @click="postMsg"
-                    >
-                        {{ btnText }}
+                    <button v-if="_loggedIn" class="btn my-auto sm:ml-2" @click="postMsg">
+                        Submit Post
                     </button>
+                    <button v-else class="btn mx-auto" @click="onLogin">Login</button>
                 </div>
             </form>
         </div>
@@ -88,6 +82,7 @@
 
 <script>
 import { format } from 'date-fns';
+import { _user } from '~/plugins/global-mixins';
 
 export default {
     props: {
@@ -103,8 +98,6 @@ export default {
                 password: '',
                 message: '',
             },
-            btnText: this.$auth.loggedIn ? 'Submit Post' : 'Log In',
-            newComment: this.$auth.loggedIn ? 'Add a new comment' : 'To comment you need to log in',
         };
     },
     methods: {
@@ -114,24 +107,31 @@ export default {
         formatTime(date) {
             return format(new Date(date), 'HH:mm');
         },
-        async postMsg() {
-            if (this.$auth.loggedIn) {
-                let params = {
-                    message: this.userInfo.message,
-                    blogPost: this.blog_post._id,
-                    user: this.$auth.user._id,
-                };
-                let res = await this.$axios.$post(`blogs/${this.blog_post._id}/messages`, params);
-                this.blog_post = res;
-            } else {
-                this.$auth.loginWith('local', {
-                    data: this.userInfo,
+        async onLogin() {
+            try {
+                const { data, token } = await this.$axios.$post('/auth/login', {
+                    username: this.userInfo.username,
+                    password: this.userInfo.password,
                 });
+                await this.$store.commit('auth/SET_TOKEN', token);
+                await this.$store.commit('auth/SET_USER', data.user);
+            } catch (e) {
+                alert('Error!: ' + e);
             }
         },
+        async postMsg() {
+            let params = {
+                message: this.userInfo.message,
+                blogPost: this.blog_post._id,
+                user: this._loggedIn._id,
+            };
+            await this.$axios.$post(`blogs/${this.blog_post._id}/messages`, params);
+            this.$router.push({ path: `/blogs/${this.blog_post._id}` });
+        },
         async deleteMsg(id) {
-            const res = await this.$axios.$delete(`blogs/${this.blog_post._id}/messages/${id}`);
-            this.blog_post = res;
+            await this.$axios.$delete(`blogs/${this.blog_post._id}/messages/${id}`).then(() => {
+                this.$router.push({ path: `/blogs/${this.blog_post._id}` });
+            });
         },
     },
 };

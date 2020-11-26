@@ -8,7 +8,7 @@
                 </span>
                 <input type="radio" :id="blogPost.id" :value="blogPost.id" v-model="checkedBlogs" />
             </div>
-            <span class="my-3" v-if="!backLog.data">No blogs available</span>
+            <span class="my-3" v-if="!backLog.results">No blogs available</span>
             <button class="btn w-1/2 mx-auto" @click="submitBlogPosts">
                 Submit Blogs
             </button>
@@ -59,27 +59,25 @@ export default {
             blogPost: {
                 content: '',
                 title: '',
-                author: this.$auth.user._id,
+                author: this.$store.state.auth.user._id,
                 posted: false,
             },
         };
     },
-
     methods: {
         async submitBlogPosts() {
             const res = await this.$axios.$patch(`blogs/${this.checkedBlogs}`, {
                 posted: true,
             });
-            this.backLog = await this.$axios.$get(`users/me/blogs`);
-            clear();
-            return res;
+            this.$router.push({ path: `blogs/${this.checkedBlogs}` });
+
+            this.clear();
         },
         async postBlog(bool) {
             this.blogPost.posted = bool;
-            const res = await this.$axios.$post(`blogs/`, this.blogPost);
+            console.log(this.blogPost);
+            const res = await this.$axios.$post(`blogs`, this.blogPost);
             this.backLog = await this.$axios.$get(`users/me/blogs`);
-
-            return res;
         },
         async getBlog(id) {
             const res = await this.$axios.$get(`blogs/${id}`);
@@ -89,7 +87,6 @@ export default {
         },
         async editPost() {
             const res = await this.$axios.$patch(`blogs/${this.editPostId}`, this.blogPost);
-            this.backLog = await this.$axios.$get(`users/me/blogs`);
 
             return res;
         },
