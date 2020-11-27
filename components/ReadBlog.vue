@@ -70,10 +70,10 @@
                             placeholder="******************"
                         />
                     </div>
-                    <button v-if="_loggedIn" class="btn my-auto sm:ml-2" @click="postMsg">
+                    <button v-if="_loggedIn" class="btn my-auto sm:ml-2" @click="postMsg()">
                         Submit Post
                     </button>
-                    <button v-else class="btn mx-auto" @click="onLogin">Login</button>
+                    <button v-else class="btn mx-auto" @click="onLogin()">Login</button>
                 </div>
             </form>
         </div>
@@ -115,6 +115,20 @@ export default {
                 });
                 await this.$store.commit('auth/SET_TOKEN', token);
                 await this.$store.commit('auth/SET_USER', data.user);
+                const { form } = this.$route.query;
+                if (form) {
+                    await this.$router.push({ path: '/blogs' });
+                } else {
+                    await this.$router.push({
+                        path: '/users/me',
+                        params: {
+                            user: {
+                                id: data.user._id,
+                                username: data.user.username,
+                            },
+                        },
+                    });
+                }
             } catch (e) {
                 alert('Error!: ' + e);
             }
@@ -129,9 +143,8 @@ export default {
             this.$router.push({ path: `/blogs/${this.blog_post._id}` });
         },
         async deleteMsg(id) {
-            await this.$axios.$delete(`blogs/${this.blog_post._id}/messages/${id}`).then(() => {
-                this.$router.push({ path: `/blogs/${this.blog_post._id}` });
-            });
+            await this.$axios.$delete(`blogs/${this.blog_post._id}/messages/${id}`);
+            this.$router.push({ path: `/blogs/${this.blog_post._id}` });
         },
     },
 };

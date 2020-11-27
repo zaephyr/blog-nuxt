@@ -71,8 +71,8 @@ export default {
             loginShow: false,
             signupShow: false,
             userInfo: {
-                username: 'zaephyr',
-                password: '00zero00',
+                username: '',
+                password: '',
             },
             loading: false,
             errors: false,
