@@ -6,7 +6,7 @@
   <h3 align="center">blog-frontend</h3>
 
   <p align="center">
-    Simple blog frontend for using 
+    Simple blog frontend app
     <
     <br />
     <a href="http://wooden-self.surge.sh/">View Demo</a>
