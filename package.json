@@ -15,7 +15,7 @@
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/fontawesome": "^1.1.2",
-    "@nuxtjs/pwa": "^3.0.2",
+    "@nuxtjs/pwa": "^3.3.5",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.6.5",
     "date-fns": "^2.16.1",
