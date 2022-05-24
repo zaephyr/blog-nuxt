@@ -28,7 +28,7 @@
   "devDependencies": {
     "@nuxtjs/cloudinary": "^1.0.1",
     "@nuxtjs/dotenv": "^1.4.1",
-    "@nuxtjs/tailwindcss": "^3.1.0",
+    "@nuxtjs/tailwindcss": "^5.1.2",
     "fibers": "^5.0.0",
     "sass": "^1.28.0",
     "sass-loader": "^10.0.5"
